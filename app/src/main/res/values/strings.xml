@@ -1,0 +1,60 @@
+<resources>
+    <string name="gcm_sender_id">276290617510</string>
+
+    <string name="ok">OK</string>
+    <string name="no">NO</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">ACCEPT</string>
+    <string name="submit">SUBMIT</string>
+    <string name="log_off">LOG OFF</string>
+    <string name="decline">DECLINE</string>
+    <string name="app_name">Choice Customer Care</string>
+
+    <!-- Menu -->
+    <string name="menu_logout">Log Out</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_history">History</string>
+    <string name="menu_take_break">Take a break</string>
+    <string name="menu_change_pin">Change Password</string>
+
+    <!-- Home tab -->
+    <string name="tab_main">MAIN</string>
+    <string name="tab_room">ROOM</string>
+    <string name="tab_staff">STAFF</string>
+
+    <!-- Message -->
+    <string name="message_incoming">Incoming:</string>
+    <string name="message_completed">Completed:</string>
+    <string name="message_in_progress">In Progress:</string>
+
+    <!-- Sign in -->
+    <string name="login">Login</string>
+    <string name="pin_code">Password</string>
+    <string name="account_number">Email</string>
+    <string name="click_here">Click Here</string>
+    <string name="password_does_not_match">Password doesn\'t match</string>
+    <string name="invalid_information">Please enter a valid information</string>
+    <string name="invalid_username_password">Invalid Username or Password</string>
+    <string name="no_account_message">If you don\'t have account. To request an account.</string>
+
+    <!-- Change password-->
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <!-- Sign Up -->
+    <string name="email">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password">Password</string>
+
+    <string name="last_name">Last Name</string>
+    <string name="user_type">User Type</string>
+    <string name="first_name">First Name</string>
+
+    <!-- Log off -->
+    <string name="log_off_message">Are you sure you want to log out ?</string>
+
+    <!-- Staff -->
+    <string name="room_view">Room View:</string>
+    <string name="staff_view">Staff View:</string>
+</resources>

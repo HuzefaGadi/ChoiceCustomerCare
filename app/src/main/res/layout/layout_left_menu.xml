@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/menu_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/menu_close_btn"
+        android:background="@color/color_primary"
+        android:clipToPadding="false"
+        android:padding="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/menu_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@color/color_primary"
+        android:padding="2dp">
+
+        <com.unfc.choicecustomercare.view.CustomImageButton
+            android:id="@+id/home_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="5dp"
+            android:src="@mipmap/ic_action_close_menu"/>
+    </LinearLayout>
+</RelativeLayout>

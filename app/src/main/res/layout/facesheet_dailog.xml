@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dailogbox"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/txt_dia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="Please Select Image"
+        android:textColor="@android:color/white"
+        android:textSize="15dp"
+        android:textStyle="bold" >
+    </TextView>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@drawable/line" />
+
+    <Button
+        android:id="@+id/Gallery"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5sp"
+        android:background="@drawable/dailog_left_selector"
+        android:clickable="true"
+        android:text="Gallery"
+        android:textColor="@color/color_primary"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/Camera"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10sp"
+        android:background="@drawable/dailog_left_selector"
+        android:clickable="true"
+        android:text="Camera"
+    android:textColor="@color/color_primary"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/Cancel"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10sp"
+        android:layout_marginTop="10sp"
+        android:background="@drawable/dailog_left_selector"
+        android:clickable="true"
+        android:text="Cancel"
+            android:textColor="@color/color_primary"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+
+    <!-- App theme -->
+    <color name="color_primary">#e85d1c</color>
+    <color name="color_primary_dark">#c0501c</color>
+
+    <!-- Main -->
+    <color name="main_border">#828080</color>
+    <color name="emergency_bg">#e61610</color>
+    <color name="Black0Percent">#00000000</color>
+    <color name="dailog_btn_color">#f96d6d</color>
+    <color name="dailog_left_btn_color">#fff</color>
+    <color name="dailog_right_btn_color">#efcccc</color>
+    <color name="selector_color">#50000000</color>
+    <color name="edt_color">#ffffff</color>
+    <color name="layout_color">#90000000</color>
+    <!-- Message List -->
+    <color name="separate_bg">#959292</color>
+    <color name="message_accept_bg">#04c556</color>
+    <color name="message_decline_bg">#f12b3e</color>
+</resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp">
+
+    <com.unfc.choicecustomercare.view.CustomTextView
+        android:id="@+id/message_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/message_item_text"/>
+
+    <com.unfc.choicecustomercare.view.CustomTextView
+        android:id="@+id/message_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/message_item_time"
+        android:textStyle="italic"/>
+
+    <LinearLayout
+        android:id="@+id/message_button_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <com.unfc.choicecustomercare.view.CustomClickTextView
+            android:id="@+id/message_accept_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/message_accept_bg"
+            android:gravity="center"
+            android:padding="@dimen/message_button_padding"
+            android:text="@string/accept"
+            android:textColor="@color/white"
+            android:textSize="@dimen/message_item_text"/>
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp"/>
+
+        <com.unfc.choicecustomercare.view.CustomClickTextView
+            android:id="@+id/message_decline_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/message_decline_bg"
+            android:gravity="center"
+            android:padding="@dimen/message_button_padding"
+            android:text="@string/decline"
+            android:textColor="@color/white"
+            android:textSize="@dimen/message_item_text"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separate_bg"/>
+</LinearLayout>
