@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,99 +41,152 @@ import com.unfc.choicecustomercare.utils.CustomPreferences;
 import com.unfc.choicecustomercare.utils.LoadingDialog;
 import com.unfc.choicecustomercare.utils.Utilities;
 
+import java.util.Date;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MyGcmListenerService extends GcmListenerService {
 
-	/**
-	 * Called when message is received.
-	 *
-	 * @param from
-	 *            SenderID of the sender.
-	 * @param data
-	 *            Data bundle containing message data as key/value pairs. For
-	 *            Set of keys use data.keySet().
-	 */
-	@Override
-	public void onMessageReceived(String from, Bundle data) {
+    /**
+     * Called when message is received.
+     *
+     * @param from SenderID of the sender.
+     * @param data Data bundle containing message data as key/value pairs. For
+     *             Set of keys use data.keySet().
+     */
+    @Override
+    public void onMessageReceived(String from, Bundle data) {
 
-		CustomPreferences.init(this);
-		String message = data.getString("text");
-		if (data.containsKey("emergency")) {
+        CustomPreferences.init(this);
+        String message = data.getString("text");
+        String messageQueId = data.getString("messageQueue");
+        String messageType = data.getString("messageType");
+        if (data.containsKey("emergency")) {
 
-			Intent intent = new Intent(Constants.INTENT_EMERGENCY);
-			String isEmergency = data.getString("emergency");
-			if (isEmergency.equals("true")) {
+            Intent intent = new Intent(Constants.INTENT_EMERGENCY);
+            String isEmergency = data.getString("emergency");
 
-				CustomPreferences.setPreferences(Constants.PREF_IS_EMERGENCY, true);
-				CustomPreferences.setPreferences(Constants.PREF_EMERGENCY_MESSAGE, message);
-				startService(new Intent(this, PlaySoundService.class));
-				// PowerManager pm = (PowerManager)
-				// this.getSystemService(Context.POWER_SERVICE);
-				// PowerManager.WakeLock wl = pm
-				// .newWakeLock(PowerManager.FULL_WAKE_LOCK |
-				// PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
-				// wl.acquire(10000);
-				sendNotification(message);
-			} else {
+            if (isEmergency.equals("true")) {
 
-				CustomPreferences.setPreferences(Constants.PREF_EMERGENCY_MESSAGE, "");
-				CustomPreferences.setPreferences(Constants.PREF_IS_EMERGENCY, false);
-				stopService(new Intent(this, PlaySoundService.class));
-			}
+                CustomPreferences.setPreferences(Constants.PREF_IS_EMERGENCY, true);
+                CustomPreferences.setPreferences(Constants.PREF_EMERGENCY_MESSAGE, message);
+                startService(new Intent(this, PlaySoundService.class));
+                // PowerManager pm = (PowerManager)
+                // this.getSystemService(Context.POWER_SERVICE);
+                // PowerManager.WakeLock wl = pm
+                // .newWakeLock(PowerManager.FULL_WAKE_LOCK |
+                // PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+                // wl.acquire(10000);
+                sendNotification(message);
+            } else {
 
-			intent.putExtra(Constants.INTENT_EMERGENCY_CLOSE, isEmergency.equals("true"));
-			LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		} else {
+                CustomPreferences.setPreferences(Constants.PREF_EMERGENCY_MESSAGE, "");
+                CustomPreferences.setPreferences(Constants.PREF_IS_EMERGENCY, false);
+                stopService(new Intent(this, PlaySoundService.class));
+            }
 
-			Intent intent = new Intent(Constants.INTENT_UPDATE_MESSAGE);
-			LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-			sendNotification(message);
-		}
-	}
+            intent.putExtra(Constants.INTENT_EMERGENCY_CLOSE, isEmergency.equals("true"));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        }
+        if (data.containsKey("chargedNurse")) {
 
-	/**
-	 * Create and show a simple notification containing the received GCM
-	 * message.
-	 *
-	 * @param message
-	 *            GCM message received.
-	 */
-	private void sendNotification(String message) {
+            String chargedNurseMessage = data.getString("chargedNurse");
+            if(chargedNurseMessage.equals("true"))
+            {
+                sendNotificationForChargedNurse(message);
+            }
 
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        } else {
 
-		Intent intentAccept = new Intent(this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent pendingAccept = PendingIntent.getActivity(this, 1, intentAccept, PendingIntent.FLAG_ONE_SHOT);
+            Intent intent = new Intent(Constants.INTENT_UPDATE_MESSAGE);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            sendNotification(message);
+        }
+    }
+
+    /**
+     * Create and show a simple notification containing the received GCM
+     * message.
+     *
+     * @param message GCM message received.
+     */
+    private void sendNotification(String message) {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentAccept = new Intent(this, MainActivity.class);
+        intent.setAction("accept");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingAccept = PendingIntent.getActivity(this, 1, intentAccept, PendingIntent.FLAG_ONE_SHOT);
 //
-		Intent intentDecline = new Intent(this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		PendingIntent pendingDecline = PendingIntent.getActivity(this, 2, intentDecline, PendingIntent.FLAG_ONE_SHOT);
+        Intent intentDecline = new Intent(this, MainActivity.class);
+        intent.setAction("decline");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingDecline = PendingIntent.getActivity(this, 2, intentDecline, PendingIntent.FLAG_ONE_SHOT);
 
-		Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setContentTitle(getString(R.string.app_name))
-				.setContentText(message).setAutoCancel(true)
-				.setSound(defaultSoundUri)
-				.setContentIntent(pendingIntent)
-				.setAutoCancel(false)
-				.addAction(R.drawable.accept_ico, "Accept", pendingAccept)
-				.addAction(R.drawable.decline_ico, "Decline", pendingDecline);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message).setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false)
+                .addAction(R.drawable.accept_ico, "Accept", pendingAccept)
+                .addAction(R.drawable.decline_ico, "Decline", pendingDecline);
         notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
         notificationBuilder.setAutoCancel(true);
 
 
-		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify((int) new Date().getTime(), notificationBuilder.build());
 
-	}
+    }
+
+    /**
+     * Create and show a simple notification containing the received GCM
+     * message.
+     *
+     * @param message GCM message received.
+     */
+    private void sendNotificationForChargedNurse(String message) {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction("chargedNurse");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentAccept = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingAccept = PendingIntent.getActivity(this, 1, intentAccept, PendingIntent.FLAG_ONE_SHOT);
+//
+        Intent intentDecline = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingDecline = PendingIntent.getActivity(this, 2, intentDecline, PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message).setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationBuilder.setAutoCancel(true);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify((int) new Date().getTime(), notificationBuilder.build());
+
+    }
 
     /**
      * Do accept message
@@ -141,7 +194,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private void doAcceptMessage(MessageEntity message) {
 
         final Dialog dialog = LoadingDialog.show(getApplicationContext());
-        new BaseApi(true).getInterface().doAcceptMessage(message.getMessageQueueId(), message.getMessageTypeId(),
+        new BaseApi(true).getInterface().doAcceptMessage(message.getMessageQueueId(), message.getMessageTypeId(), message.getResponderId(),
                 new Callback<BaseEntity>() {
                     @Override
                     public void success(BaseEntity baseEntity, Response response) {

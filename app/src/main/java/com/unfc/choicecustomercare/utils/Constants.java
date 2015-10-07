@@ -32,4 +32,6 @@ public class Constants {
 
 	// Preference user
 	public static final String PREF_USER_TOKEN = "com.unfc.choicecustomercare.token";
+
+	public static final String RESPONDER_ID="responderId";
 }

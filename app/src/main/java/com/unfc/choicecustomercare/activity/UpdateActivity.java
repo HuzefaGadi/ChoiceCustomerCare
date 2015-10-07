@@ -59,7 +59,7 @@ public class UpdateActivity extends Activity implements ImageChooserListener {
 	ImageView ivProfilePhoto;
     private SharedPreferences preferences;
 	private ImageChooserManager imageChooserManager;
-	private String filePath;
+	private String filePath =null;
 	private int chooserType;
 	private AlertDialog profile_Dailog;
 
@@ -203,41 +203,50 @@ public class UpdateActivity extends Activity implements ImageChooserListener {
 
 
     private void updateUserProfile() {
+		String encodedImage="";
+		if(filePath!=null)
+		{
+			Bitmap bm = BitmapFactory.decodeFile(filePath);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+			byte[] b = baos.toByteArray();
+			encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+		}
 
-        Bitmap bm = BitmapFactory.decodeFile(filePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-        byte[] b = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
         final Dialog dialog = LoadingDialog.show(this);
         new BaseApi(false).getInterface().doUpdate(edtFirstName.getText().toString(),
-                edtLastName.getText().toString(),
-                CustomPreferences.getPreferences(Constants.PREF_RESPONDER_ID, ""),
-                edtBio.getText().toString(),
-                encodedImage,
-                cbChargedNurse.isChecked() + "", new Callback<UpdateResponseModel>() {
-                    @Override
-                    public void success(UpdateResponseModel userInfoEntity, Response response) {
+				edtLastName.getText().toString(),
+				CustomPreferences.getPreferences(Constants.PREF_RESPONDER_ID, ""),
+				edtBio.getText().toString(),
+				encodedImage,
+				cbChargedNurse.isChecked() + "", new Callback<UpdateResponseModel>() {
+					@Override
+					public void success(UpdateResponseModel userInfoEntity, Response response) {
 
-                        if (userInfoEntity.isResult()) {
-                            CustomPreferences.setPreferences(Constants.PREF_FIRST_NAME, edtFirstName.getText().toString());
-                            CustomPreferences.setPreferences(Constants.PREF_LAST_NAME, edtLastName.getText().toString());
-                            CustomPreferences.setPreferences(Constants.PREF_PROFILE_PHOTO, Constants.BASE_URL+ userInfoEntity.getUrl());
-                            CustomPreferences.setPreferences(Constants.PREF_BIO, edtBio.getText().toString());
-                            CustomPreferences.setPreferences(Constants.PREF_IS_CHARGED_NURSE, cbChargedNurse.isChecked());
-                            Log.e("Photo", CustomPreferences.getPreferences(Constants.PREF_PROFILE_PHOTO, ""));
+						if (userInfoEntity.isResult()) {
+							CustomPreferences.setPreferences(Constants.PREF_FIRST_NAME, edtFirstName.getText().toString());
+							CustomPreferences.setPreferences(Constants.PREF_LAST_NAME, edtLastName.getText().toString());
+							CustomPreferences.setPreferences(Constants.PREF_PROFILE_PHOTO, Constants.BASE_URL + userInfoEntity.getUrl());
+							CustomPreferences.setPreferences(Constants.PREF_BIO, edtBio.getText().toString());
+							CustomPreferences.setPreferences(Constants.PREF_IS_CHARGED_NURSE, cbChargedNurse.isChecked());
+							Log.e("Photo", CustomPreferences.getPreferences(Constants.PREF_PROFILE_PHOTO, ""));
 
-                        }
-                        dialog.dismiss();
-                        Toast.makeText(UpdateActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
-                    }
+						}
+						dialog.dismiss();
+						Toast.makeText(UpdateActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
+						finish();
+						Intent intent = new Intent(UpdateActivity.this,MainActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
 
-                    @Override
-                    public void failure(RetrofitError retrofitError) {
-                        dialog.dismiss();
-                    }
-                });
+					}
+
+					@Override
+					public void failure(RetrofitError retrofitError) {
+						dialog.dismiss();
+					}
+				});
 
     }
 

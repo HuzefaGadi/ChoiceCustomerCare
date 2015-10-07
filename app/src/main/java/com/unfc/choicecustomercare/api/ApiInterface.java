@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.unfc.choicecustomercare.models.BaseEntity;
 import com.unfc.choicecustomercare.models.HistoryEntity;
 import com.unfc.choicecustomercare.models.MessageEntity;
+import com.unfc.choicecustomercare.models.ResponderEntity;
+import com.unfc.choicecustomercare.models.Room;
 import com.unfc.choicecustomercare.models.UpdateResponseModel;
 import com.unfc.choicecustomercare.models.UserEntity;
 import com.unfc.choicecustomercare.models.UserInfoEntity;
@@ -21,7 +23,7 @@ import retrofit.http.Query;
 /**
  * Hai Nguyen - 8/27/15.
  */
-public interface ApiInterface {
+public interface ApiInterface{
 
 	@POST("/api/account/register")
 	void doRegister(@Body UserEntity user, Callback<BaseEntity> callback);
@@ -45,8 +47,11 @@ public interface ApiInterface {
 	@GET("/api/message")
 	void getMessages(Callback<MessageEntity> callback);
 
+	@GET("/api/message/responders")
+	void getResponders(Callback<List<ResponderEntity>> callback);
+
 	@POST("/api/message/accept")
-	void doAcceptMessage(@Query("messageId") String messageId, @Query("messageTypeid") String messageTypeId,
+	void doAcceptMessage(@Query("messageId") String messageId, @Query("messageTypeid") String messageTypeId,@Query("responderId") String responderId,
 			Callback<BaseEntity> callback);
 
 	@POST("/api/message/deny")
@@ -60,4 +65,21 @@ public interface ApiInterface {
 
 	@POST("/api/account/changepassword")
 	void doChangePassword(@Body JsonObject body, Callback<List<MessageEntity>> callback);
+
+	@POST("/api/message/roomrequest")
+	void getRequestRoom(@Query("id") int roomId, Callback<List<MessageEntity>> callback);
+
+	@POST("/api/message/responderrequest")
+	void getResponderRequest(@Query("id") int responderId, Callback<List<ResponderEntity>> callback);
+
+	@GET("/api/responderroom/getassignedrooms")
+	void getAssignedRooms(@Query("responderId") int responderId, Callback<List<Room>> callback);
+
+	@GET("/api/responderroom/getunassignedrooms")
+	void getUnAssignedRooms(@Query("responderId") int responderId, Callback<List<Room>> callback);
+
+	@POST("/api/responderroom/unassignroom")
+	void setUnassignRoom(@Query("roomId") int roomId, Callback<BaseEntity> callback);
+
+
 }

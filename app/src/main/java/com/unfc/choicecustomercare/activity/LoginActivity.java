@@ -93,6 +93,7 @@ public class LoginActivity extends BaseActivity {
 
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					intent.putExtra(Constants.INTENT_USER_TYPE, Integer.parseInt(userEntity.getRole()));
+
 					startActivity(intent);
 					finish();
 				} else {

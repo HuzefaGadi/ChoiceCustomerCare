@@ -246,7 +246,7 @@ public class MessageAdapter extends BaseExpandableListAdapter {
 	private void doAcceptMessage(MessageEntity message) {
 
 		final Dialog dialog = LoadingDialog.show(mActivity);
-		new BaseApi(true).getInterface().doAcceptMessage(message.getMessageQueueId(), message.getMessageTypeId(),
+		new BaseApi(true).getInterface().doAcceptMessage(String.valueOf(message.getMessageQueueId()), message.getMessageTypeId(),message.getResponderId(),
 				new Callback<BaseEntity>() {
 					@Override
 					public void success(BaseEntity baseEntity, Response response) {

@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="10dp"
-              android:paddingRight="10dp"
-              android:paddingTop="10dp">
 
-    <com.unfc.choicecustomercare.view.CustomTextView
-        android:id="@+id/resource_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:textColor="@color/black"
-        android:textSize="@dimen/message_section_text"
-        android:textStyle="bold"/>
 
-    <Spinner
-        android:id="@+id/resource_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/main_content_border"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/resource_list_view"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
+
+        <com.unfc.choicecustomercare.view.CustomTextView
+            android:id="@+id/resource_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textSize="@dimen/message_section_text"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/resource_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_content_border" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/resource_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp" />
+    </LinearLayout>
