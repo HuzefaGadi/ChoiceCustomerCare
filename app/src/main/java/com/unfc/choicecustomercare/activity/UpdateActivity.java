@@ -31,6 +31,7 @@ import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.unfc.choicecustomercare.R;
 import com.unfc.choicecustomercare.api.BaseApi;
 import com.unfc.choicecustomercare.models.UpdateResponseModel;
+import com.unfc.choicecustomercare.models.UserForUpdateEntity;
 import com.unfc.choicecustomercare.models.UserInfoEntity;
 import com.unfc.choicecustomercare.utils.Constants;
 import com.unfc.choicecustomercare.utils.CustomPreferences;
@@ -215,12 +216,16 @@ public class UpdateActivity extends Activity implements ImageChooserListener {
 
 
         final Dialog dialog = LoadingDialog.show(this);
-        new BaseApi(false).getInterface().doUpdate(edtFirstName.getText().toString(),
-				edtLastName.getText().toString(),
-				CustomPreferences.getPreferences(Constants.PREF_RESPONDER_ID, ""),
-				edtBio.getText().toString(),
-				encodedImage,
-				cbChargedNurse.isChecked() + "", new Callback<UpdateResponseModel>() {
+
+		UserForUpdateEntity user = new UserForUpdateEntity();
+		user.setFirstName(edtFirstName.getText().toString());
+		user.setLastName(edtLastName.getText().toString());
+		user.setResponderId(CustomPreferences.getPreferences(Constants.PREF_RESPONDER_ID, ""));
+		user.setBio(edtBio.getText().toString());
+		user.setProfilePhoto(encodedImage);
+		user.setIsChargedNurse(cbChargedNurse.isChecked() + "");
+        new BaseApi(false).getInterface().doUpdate(user
+				, new Callback<UpdateResponseModel>() {
 					@Override
 					public void success(UpdateResponseModel userInfoEntity, Response response) {
 

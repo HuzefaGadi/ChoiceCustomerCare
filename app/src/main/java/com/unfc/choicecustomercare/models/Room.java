@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rashida on 07/10/15.
  */
+
 public class Room {
 
-    @SerializedName("Id")
+    @SerializedName("id")
     private int roomId;
     @SerializedName("LocationId")
     private int locationId;
-    @SerializedName("Name")
+    @SerializedName("name")
     private String name;
 
     public int getRoomId() {
