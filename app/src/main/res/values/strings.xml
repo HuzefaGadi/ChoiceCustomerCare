@@ -64,4 +64,6 @@
 
 
     <string name="unassign">UnAssign</string>
+    <string name="intro_for_assignedrooms_tab">List of Assigned Rooms</string>
+    <string name="intro_for_unassignedrooms_tab">List of Un Assigned Rooms</string>
 </resources>

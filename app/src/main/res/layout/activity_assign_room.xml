@@ -20,9 +20,23 @@
         android:textSize="@dimen/button_text"
         android:textStyle="bold"/>
 
+
+    <com.unfc.choicecustomercare.view.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_assign_room"
+        android:text="@string/intro_for_assignedrooms_tab"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:id="@+id/tv_introduction" />
+
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resource_list_view_assigned_rooms"
-        android:layout_below="@+id/btn_assign_room"
+        android:layout_below="@+id/tv_introduction"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -33,6 +47,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resource_list_view_unassigned_rooms"
         android:layout_below="@+id/btn_assign_room"
+        android:layout_above="@+id/btn_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -40,5 +55,20 @@
         android:layout_marginTop="20dp"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"/>
+
+
+    <com.unfc.choicecustomercare.view.CustomClickTextView
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/color_primary"
+        android:gravity="center"
+        android:padding="@dimen/button_padding"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/button_text"
+        android:textStyle="bold"/>
 
 </RelativeLayout>
