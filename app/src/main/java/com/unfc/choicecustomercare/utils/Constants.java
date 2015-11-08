@@ -13,6 +13,7 @@ public class Constants {
 	public static final String INTENT_EMERGENCY = "com.unfc.choicecustomercare.emergency";
 	public static final String INTENT_UPDATE_MESSAGE = "com.unfc.choicecustomercare.update_message";
 	public static final String INTENT_EMERGENCY_CLOSE = "com.unfc.choicecustomercare.emergency_close";
+	public static final String INTENT_UPDATE_TAKE_A_BREAK = "com.unfc.choicecustomercare.update_takeabreak";
 
 	// Preferences
 	public static final String PREF_PUSH_TOKEN = "com.unfc.choicecustomercare.push_token";
@@ -29,9 +30,13 @@ public class Constants {
 	public static final String PREF_USER_PASSWORD = "com.unfc.choicecustomercare.user_password";
 	public static final String PREF_EMERGENCY_MESSAGE = "com.unfc.choicecustomercare.emergency_message";
 	public static final String PREF_RESPONDER_ID = "com.unfc.choicecustomercare.responder_id";
+	public static final String PREF_LOGGED_OUT = "com.unfc.choicecustomercare.loggedout";
+	public static final int TAKE_A_BREAK_NOTIFICATION_ID = 1023453;
 
 	// Preference user
 	public static final String PREF_USER_TOKEN = "com.unfc.choicecustomercare.token";
 
 	public static final String RESPONDER_ID="responderId";
+
+
 }

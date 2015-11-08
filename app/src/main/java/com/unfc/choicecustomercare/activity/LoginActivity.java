@@ -89,7 +89,7 @@ public class LoginActivity extends BaseActivity {
 					CustomPreferences.setPreferences(Constants.PREF_CLIENT_NAME, userEntity.getClientName());
 					CustomPreferences.setPreferences(Constants.PREF_RESPONDER_ID, userEntity.getResponderId());
 					CustomPreferences.setPreferences(Constants.PREF_IS_CHARGED_NURSE, userEntity.getIsChargedNurse().equals("true")?true:false);
-
+					CustomPreferences.setPreferences(Constants.PREF_LOGGED_OUT,false);
 
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					intent.putExtra(Constants.INTENT_USER_TYPE, Integer.parseInt(userEntity.getRole()));

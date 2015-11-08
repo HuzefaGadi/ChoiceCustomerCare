@@ -1,5 +1,7 @@
 package com.unfc.choicecustomercare.api;
 
+import android.telecom.Call;
+
 import com.google.gson.JsonObject;
 import com.unfc.choicecustomercare.models.BaseEntity;
 import com.unfc.choicecustomercare.models.HistoryEntity;
@@ -52,7 +54,8 @@ public interface ApiInterface{
 	void getMessages(Callback<MessageEntity> callback);
 
 	@GET("/api/message/responders")
-	void getResponders(Callback<List<ResponderEntity>> callback);
+	void
+	getResponders(Callback<List<ResponderEntity>> callback);
 
 	@POST("/api/message/accept")
 	void doAcceptMessage(@Query("messageId") String messageId, @Query("messageTypeid") String messageTypeId,@Query("responderId") String responderId,
@@ -88,5 +91,13 @@ public interface ApiInterface{
 	@POST("/api/responderroom/assignroom")
 	void setAssignRoom(@Query("roomId") int roomId,@Query("responderId") int responderId, Callback<BaseEntity> callback);
 
+	@GET("/api/responderbreak/checkavailability")
+	void getAvailableUsers(@Query("responderId") String responderId,@Query("userType") int userType,Callback<List<ResponderEntity>> callback);
+
+	@POST("/api/responderbreak/notifytotakeover")
+	void notifyToTakeOver(@Query("fromResponderId") String fromResponderId,@Query("toResponderId") String toResponderId,Callback<BaseEntity> callback);
+
+	@POST("/api/responderbreak/accept")
+	void acceptTakeABreak(@Query("fromResponderId") String fromResponderId,@Query("toResponderId") String toResponderId,Callback<BaseEntity> callback);
 
 }

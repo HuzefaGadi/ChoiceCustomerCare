@@ -1,131 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:orientation="vertical"
-              android:padding="10dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="X"
-        android:id="@+id/textView2"
-        android:layout_gravity="right"
-        android:textStyle="bold"
-        android:textSize="25sp"
-        android:padding="10dp" />
-
-    <com.unfc.choicecustomercare.view.CustomTextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Are you sure want to go on a break ??"
-        android:textColor="@color/color_primary"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textSize="25sp"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-
-        <com.unfc.choicecustomercare.view.CircularImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/default_profile_doctor"
-            android:scaleType="fitCenter"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="15dp" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:gravity="center_vertical">
-            <com.unfc.choicecustomercare.view.CustomTextView
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dr. Samantha Jones"
+                android:layout_gravity="right"
+                android:padding="10dp"
+                android:text="X"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <com.unfc.choicecustomercare.view.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Are you sure want to go on a break ??"
+                android:textColor="@color/color_primary"
+                android:textSize="25sp" />
+
+            <Spinner
+                android:id="@+id/resource_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_content_border" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+
+                <com.unfc.choicecustomercare.view.CircularImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="15dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/default_profile_doctor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <com.unfc.choicecustomercare.view.CustomTextView
+                        android:id="@+id/tv_client_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.unfc.choicecustomercare.view.CustomTextView
+                android:id="@+id/tv_text"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="will be assigned your task until you return."
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:id="@+id/tv_client_name" />
+                android:textSize="14sp" />
+
+            <com.unfc.choicecustomercare.view.CustomClickTextView
+                android:id="@+id/tv_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/message_accept_bg"
+                android:gravity="center"
+                android:padding="@dimen/message_button_padding"
+                android:text="OK"
+                android:textColor="@color/white"
+                android:textSize="@dimen/message_item_text"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/ll_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+
+                <com.unfc.choicecustomercare.view.CustomTextView
+                    android:id="@+id/tv_availability"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Checking Availability"
+                    android:textColor="@color/color_primary"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <com.unfc.choicecustomercare.view.CustomTextView
+                    android:id="@+id/tv_text2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Please wait ..."
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <com.unfc.choicecustomercare.view.CustomClickTextView
+                    android:id="@+id/tv_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/message_decline_bg"
+                    android:gravity="center"
+                    android:padding="@dimen/message_button_padding"
+                    android:text="No"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/message_item_text"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+                <com.unfc.choicecustomercare.view.CustomClickTextView
+                    android:id="@+id/tv_log_off"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/message_accept_bg"
+                    android:gravity="center"
+                    android:padding="@dimen/message_button_padding"
+                    android:text="Log Off"
+                    android:enabled="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/message_item_text"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
-    <com.unfc.choicecustomercare.view.CustomTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="will be assigned your task until you return."
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:id="@+id/tv_text"
-        android:layout_marginBottom="40dp" />
-
-    <com.unfc.choicecustomercare.view.CustomTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Checking Availability"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="@color/color_primary"
-        android:textSize="25sp"/>
-
-    <com.unfc.choicecustomercare.view.CustomTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Please wait ..."
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:id="@+id/tv_text2"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="40dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="15dp">
-
-        <com.unfc.choicecustomercare.view.CustomClickTextView
-            android:id="@+id/tv_no"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/message_decline_bg"
-            android:gravity="center"
-            android:padding="@dimen/message_button_padding"
-            android:text="No"
-            android:textColor="@color/white"
-            android:textSize="@dimen/message_item_text"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="10dp"
-            android:layout_height="1dp"/>
-
-        <com.unfc.choicecustomercare.view.CustomClickTextView
-            android:id="@+id/tv_log_off"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/message_accept_bg"
-            android:gravity="center"
-            android:padding="@dimen/message_button_padding"
-            android:text="Log Off"
-            android:textColor="@color/white"
-            android:textSize="@dimen/message_item_text"
-            android:textStyle="bold" />
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

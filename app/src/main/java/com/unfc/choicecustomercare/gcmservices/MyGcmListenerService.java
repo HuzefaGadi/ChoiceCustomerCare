@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.unfc.choicecustomercare.R;
+import com.unfc.choicecustomercare.activity.LoginActivity;
 import com.unfc.choicecustomercare.activity.MainActivity;
 import com.unfc.choicecustomercare.api.BaseApi;
 import com.unfc.choicecustomercare.models.BaseEntity;
@@ -90,7 +91,7 @@ public class MyGcmListenerService extends GcmListenerService {
             intent.putExtra(Constants.INTENT_EMERGENCY_CLOSE, isEmergency.equals("true"));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
-        if (data.containsKey("chargedNurse")) {
+        else if (data.containsKey("chargedNurse")) {
 
             String chargedNurseMessage = data.getString("chargedNurse");
             if(chargedNurseMessage.equals("true"))
@@ -98,7 +99,27 @@ public class MyGcmListenerService extends GcmListenerService {
                 sendNotificationForChargedNurse(message);
             }
 
-        } else {
+        } else if (data.containsKey("takeBreakAccept")) {
+
+            String takeBreakAccept = data.getString("takeBreakAccept");
+            if(takeBreakAccept.equals("true"))
+            {
+                sendNotificationForTakeBreakAccept(message,data.getString("fromId"),data.getString("toId"));
+                Intent intent = new Intent(Constants.INTENT_UPDATE_TAKE_A_BREAK);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }
+            else
+            {
+
+            }
+
+        }
+        else if(data.containsKey("takeBreak")) {
+
+            sendNotificationForTakeBreak(message, data.getString("fromId"),data.getString("toId"));
+
+        }
+        else{
 
             Intent intent = new Intent(Constants.INTENT_UPDATE_MESSAGE);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -154,6 +175,89 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
+
+    private void sendNotificationForTakeBreak(String message,String fromId,String toId) {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction("takeBreak");
+        intent.putExtra("fromId",fromId);
+        intent.putExtra("toId",toId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentAccept = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingAccept = PendingIntent.getActivity(this, 1, intentAccept, PendingIntent.FLAG_ONE_SHOT);
+//
+        Intent intentDecline = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingDecline = PendingIntent.getActivity(this, 2, intentDecline, PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message).setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationBuilder.setAutoCancel(true);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify((int) new Date().getTime(), notificationBuilder.build());
+
+    }
+
+    private void sendNotificationForTakeBreakAccept(String message,String fromId,String toId) {
+
+        boolean loggedOut = CustomPreferences.getPreferences(Constants.PREF_LOGGED_OUT,false);
+        Intent intent;
+        if(loggedOut)
+        {
+            intent = new Intent(this, LoginActivity.class);
+
+        }
+        else
+        {
+            intent = new Intent(this, MainActivity.class);
+        }
+
+        intent.setAction("takeBreakAccept");
+        intent.putExtra("fromId",fromId);
+        intent.putExtra("toId",toId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentAccept = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingAccept = PendingIntent.getActivity(this, 1, intentAccept, PendingIntent.FLAG_ONE_SHOT);
+//
+        Intent intentDecline = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingDecline = PendingIntent.getActivity(this, 2, intentDecline, PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message).setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationBuilder.setAutoCancel(true);
+
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(Constants.TAKE_A_BREAK_NOTIFICATION_ID, notificationBuilder.build());
+
+    }
     private void sendNotificationForChargedNurse(String message) {
 
         Intent intent = new Intent(this, MainActivity.class);

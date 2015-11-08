@@ -15,9 +15,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -25,17 +28,22 @@ import com.unfc.choicecustomercare.R;
 import com.unfc.choicecustomercare.adapters.HistoryAdapter;
 import com.unfc.choicecustomercare.adapters.MenuAdapter;
 import com.unfc.choicecustomercare.adapters.MainPagerAdapter;
+import com.unfc.choicecustomercare.adapters.ResourceAdapter;
 import com.unfc.choicecustomercare.api.BaseApi;
 import com.unfc.choicecustomercare.models.BaseEntity;
 import com.unfc.choicecustomercare.models.HistoryEntity;
 import com.unfc.choicecustomercare.models.MenuEntity;
 import com.unfc.choicecustomercare.models.MessageEntity;
+import com.unfc.choicecustomercare.models.ResponderEntity;
 import com.unfc.choicecustomercare.service.PlaySoundService;
 import com.unfc.choicecustomercare.utils.Constants;
 import com.unfc.choicecustomercare.utils.CustomPreferences;
 import com.unfc.choicecustomercare.utils.LoadingDialog;
 import com.unfc.choicecustomercare.utils.ResponderType;
 import com.unfc.choicecustomercare.utils.Utilities;
+import com.unfc.choicecustomercare.view.CircularImageView;
+import com.unfc.choicecustomercare.view.CustomClickTextView;
+import com.unfc.choicecustomercare.view.CustomTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,10 +74,26 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
     @Bind(R.id.menu_recycler_view)
     RecyclerView mRecyclerMenu;
 
+
+    Spinner spnSelector;
+
+
+    CircularImageView ivProfilePhoto;
+
+   /* @Bind(R.id.tv_user_name)
+    TextView tvUserName;*/
+
+
+
+    TextView tvPersonName;
+    String loggedInResponderId;
+    int loggedInUserType;
     private Dialog mEmergencyDialog;
 
     private boolean isChargedNurse = false;
-
+    private Dialog mDialog;
+    int selectedUser;
+    Dialog dialog;
     @Override
     protected int addLayoutView() {
 
@@ -81,9 +105,19 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
         super.initComponents();
 
         Intent intent = getIntent();
+        loggedInResponderId = CustomPreferences.getPreferences(Constants.PREF_RESPONDER_ID, "0");
         if (intent != null && intent.getAction() != null && intent.getAction().equals("chargedNurse")) {
             doLogOut();
-        } else {
+        }
+        else if(intent != null && intent.getAction() != null && intent.getAction().equals("takeBreak"))
+        {
+                acceptTakeABreak(intent.getStringExtra("fromId"),intent.getStringExtra("toId"));
+        }
+        else if(intent != null && intent.getAction() != null && intent.getAction().equals("takeBreakAccept"))
+        {
+            doLogOut();
+        }
+        else {
 
             if(intent != null && intent.getAction() != null && intent.getAction().equals("accept"))
             {
@@ -103,13 +137,14 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
             }
 
             //	int userType = getIntent().getIntExtra(Constants.INTENT_USER_TYPE, 0);
-            int userType = CustomPreferences.getPreferences(Constants.PREF_ROLE_TYPE, ResponderType.TECH);
+            loggedInUserType = CustomPreferences.getPreferences(Constants.PREF_ROLE_TYPE, ResponderType.TECH);
+
             isChargedNurse = CustomPreferences.getPreferences(Constants.PREF_IS_CHARGED_NURSE, false);
             if (isChargedNurse) {
-                userType = ResponderType.CHARGED_NURSE;
+                loggedInUserType = ResponderType.CHARGED_NURSE;
             }
             MainPagerAdapter tabAdapter = new MainPagerAdapter(getApplication(), getSupportFragmentManager(),
-                    getTabs(userType));
+                    getTabs(loggedInUserType));
             setupDrawerContent();
             mViewPager.setAdapter(tabAdapter);
             mViewPager.setOffscreenPageLimit(2);
@@ -150,6 +185,8 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
 
         CustomPreferences.getPreferences(Constants.PREF_APP_PAUSED, true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mTakeABreakReceiver);
     }
 
     @Override
@@ -159,6 +196,9 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
         CustomPreferences.getPreferences(Constants.PREF_APP_PAUSED, false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(Constants.INTENT_EMERGENCY));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mTakeABreakReceiver,
+                new IntentFilter(Constants.INTENT_UPDATE_TAKE_A_BREAK));
     }
 
     /**
@@ -193,6 +233,9 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
             @Override
             public void success(BaseEntity baseEntity, Response response) {
 
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(Constants.TAKE_A_BREAK_NOTIFICATION_ID);
+                CustomPreferences.setPreferences(Constants.PREF_LOGGED_OUT,true);
                 Utilities.dismissDialog(dialog);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -286,6 +329,26 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
         }
     };
 
+    private BroadcastReceiver mTakeABreakReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(dialog != null)
+            {
+                CustomTextView availability = (CustomTextView)dialog.findViewById(R.id.tv_availability);
+                CustomTextView pleaseWait = (CustomTextView) dialog.findViewById(R.id.tv_text2);
+
+                availability.setText("You can Take a break now");
+                pleaseWait.setVisibility(View.GONE);
+
+
+                CustomClickTextView logoff = (CustomClickTextView)dialog.findViewById(R.id.tv_log_off);
+                logoff.setEnabled(true);
+               // logoff.setOnClickListener(new View.);
+            }
+        }
+    };
+
     /**
      * Get message history
      */
@@ -313,23 +376,197 @@ public class MainActivity extends BaseActivity implements MenuAdapter.OnItemClic
      */
     private void getTakeABreak() {
 
-        final Dialog dialog = new Dialog(this);
+
+        if(mDialog!=null)
+        {
+         mDialog.show();
+        }
+        else
+        {
+            mDialog = LoadingDialog.show(this);
+        }
+
+
+
+        new BaseApi(false).getInterface().getAvailableUsers(loggedInResponderId, loggedInUserType, new Callback<List<ResponderEntity>>() {
+            @Override
+            public void success(List<ResponderEntity> responderEntities, Response response) {
+
+
+                initalizeSpinner(responderEntities);
+                Utilities.dismissDialog(mDialog);
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+                Utilities.dismissDialog(mDialog);
+
+
+            }
+        });
+
+
+    }
+
+
+    private void initalizeSpinner(final List<ResponderEntity> responderEntities)
+    {
+        dialog = new Dialog(this);
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_take_break);
+        final LinearLayout linearLayout = (LinearLayout) dialog.findViewById(R.id.ll_loading);
+        CustomClickTextView ok = (CustomClickTextView)dialog.findViewById(R.id.tv_ok);
+        spnSelector = (Spinner) dialog.findViewById(R.id.resource_spinner);
+        ivProfilePhoto = (CircularImageView)dialog.findViewById(R.id.imageView);
+        tvPersonName = (CustomTextView)dialog.findViewById(R.id.tv_client_name);
+        final CustomClickTextView no = (CustomClickTextView)dialog.findViewById(R.id.tv_no);
+        //int selectedUser;
+        final int responderId ;
+        String[] responders = new String[responderEntities.size()];
+        int count = 0;
+        for(ResponderEntity user :responderEntities)
+        {
+            responders[count++] = user.getFirstName()+" "+user.getLastName();
+        }
+        spnSelector.setAdapter(new ResourceAdapter(this, responders));
+        spnSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+                selectedUser = i;
+                ResponderEntity responder = responderEntities.get(i);
+                //responderId = responder.getId();
+                String strProfilePhoto = Constants.BASE_URL + responder.getProfilePhoto();
+                if (responder.getProfilePhoto() != null) {
+                    Utilities.displayImage(getApplicationContext(), strProfilePhoto, ivProfilePhoto);
+                } else {
+                    ivProfilePhoto.setImageDrawable(null);
+                }
+               // tvUserName.setText(responder.getUser().getEmail());
+                tvPersonName.setText(responder.getFirstName() + " " + responder.getLastName());
+                //tvRoleName.setText(responder.getUser().getUserType());
+                //showResponderDetails();
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+        });
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(wlp);
-
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
-
-
         dialog.show();
+        spnSelector.setSelection(selectedUser);
+
+
+        no.setEnabled(true);
+        no.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                no.setEnabled(false);
+                linearLayout.setVisibility(View.VISIBLE);
+                notifyToTakeOver(loggedInResponderId, String.valueOf(responderEntities.get(selectedUser).getId()));
+            }
+        });
+
+        CustomClickTextView logoff = (CustomClickTextView)dialog.findViewById(R.id.tv_log_off);
+
+        logoff.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                logOut();
+            }
+        });
+
+
+
+
+    }
+
+    private void notifyToTakeOver(String fromResponderId,String toResponderId)
+    {
+        if(mDialog!=null)
+        {
+            mDialog.show();
+        }
+        else
+        {
+            mDialog = LoadingDialog.show(this);
+        }
+        new BaseApi(false).getInterface().notifyToTakeOver(fromResponderId, toResponderId, new Callback<BaseEntity>() {
+            @Override
+            public void success(BaseEntity baseEntity, Response response) {
+
+
+
+                Utilities.dismissDialog(mDialog);
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+                Utilities.dismissDialog(mDialog);
+
+
+            }
+        });
+    }
+
+    private void acceptTakeABreak(String fromResponderId,String toResponderId)
+    {
+        if(mDialog!=null)
+        {
+            mDialog.show();
+        }
+        else
+        {
+            mDialog = LoadingDialog.show(this);
+        }
+        new BaseApi(false).getInterface().acceptTakeABreak(fromResponderId, toResponderId, new Callback<BaseEntity>() {
+            @Override
+            public void success(BaseEntity baseEntity, Response response) {
+
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+                Utilities.dismissDialog(mDialog);
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+                Utilities.dismissDialog(mDialog);
+
+
+            }
+        });
     }
 
     /**
+     *
+     *
      * Do change password
      */
     private void doChangePassword(final Dialog dialog, String oldPassword, String newPassword) {
